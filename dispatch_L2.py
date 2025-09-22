@@ -1,7 +1,7 @@
 import torch
 import math 
 
-def Selective_stft_mse_loss(y, student_ests, teacher_ests, sb, k):
+def dispatch_L2(y, student_ests, teacher_ests, sb, k):
 
     # student_ests, teacher_ests, y : [B, L]
 
