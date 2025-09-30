@@ -1,13 +1,9 @@
 import torch
 import math 
 
-def dispatch_L2(y, student_ests, teacher_ests, sb, k):
+def dispatch_L2(y, student_ests, teacher_ests, k, sb=20, n_fft=512, hop_length=128, win_length=512):
 
     # student_ests, teacher_ests, y : [B, L]
-
-    n_fft = 512
-    hop_length = 128
-    win_length = 512
     window = torch.hann_window(win_length).to(student_ests.device)
 
     # STFT
@@ -57,3 +53,20 @@ def dispatch_L2(y, student_ests, teacher_ests, sb, k):
     kd_loss = (kd_per_tok * mask).sum() / (B*nb*T*k)
 
     return kd_loss
+
+
+
+if __name__ == '__main__':
+    # Create dummy tensors for demonstration
+    B, L = 2, 16000 * 4
+    y = torch.randn(B, L)
+    student_ests = torch.randn(B, L)
+    teacher_ests = torch.randn(B, L)
+    
+    # Hyperparameters
+    sb = 20     
+    k = 0.8    
+    loss = dispatch_L2(y, student_ests, teacher_ests, k, sb)
+    
+    print("\n--- Output ---")
+    print(f"Selective STFT MSE loss: {loss.item():.4f}")
